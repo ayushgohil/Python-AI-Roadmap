@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Python AI & Agents Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #020810;
+    --bg2: #050d1a;
+    --bg3: #071020;
+    --cyan: #00f5ff;
+    --amber: #ffb300;
+    --pink: #ff4ecd;
+    --green: #00ff88;
+    --purple: #a855f7;
+    --glass: rgba(0,245,255,0.04);
+    --glass-border: rgba(0,245,255,0.15);
+    --text: #e0eeff;
+    --muted: #5a7a9a;
+    --card-h: 220px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── CANVAS BACKGROUND ── */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── GRID OVERLAY ── */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+
+  /* ── WRAPPER ── */
+  .wrapper { position: relative; z-index:1; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,245,255,0.08);
+    border: 1px solid rgba(0,245,255,0.25);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 0.08em;
+    margin-bottom: 2rem;
+    animation: fadeSlideDown 0.8s ease both;
+  }
+
+  .hero-badge .dot {
+    width:6px; height:6px;
+    background: var(--green);
+    border-radius:50%;
+    animation: pulse 2s infinite;
+  }
+
+  .hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2.4rem, 7vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    animation: fadeSlideDown 0.9s 0.1s ease both;
+  }
+
+  .hero h1 .line1 { display:block; color: var(--text); }
+  .hero h1 .line2 {
+    display: block;
+    background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    max-width: 560px;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 1.5rem auto 2.5rem;
+    animation: fadeSlideDown 1s 0.2s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+    animation: fadeSlideDown 1s 0.3s ease both;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cyan);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 14px 32px;
+    border-radius: 4px;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    animation: fadeSlideDown 1s 0.4s ease both;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(0,245,255,0.3);
+  }
+
+  .hero-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 40px rgba(0,245,255,0.45);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.1em;
+    animation: fadeIn 2s 1.5s ease both;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+    animation: scrollPulse 2s infinite;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+    z-index: 1000;
+    width: 0%;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px var(--cyan);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(20px);
+    background: rgba(2,8,16,0.7);
+    border-bottom: 1px solid rgba(0,245,255,0.08);
+    transition: all 0.3s;
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--cyan); }
+
+  .nav-progress-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--cyan);
+  }
+
+  /* ── SECTION ── */
+  .section {
+    padding: 6rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s ease;
+  }
+
+  .section-header.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-label {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding: 4px 14px;
+    border: 1px solid rgba(0,245,255,0.3);
+    border-radius: 2px;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── PHASE CARDS ── */
+  .phases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .phase-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+    backdrop-filter: blur(10px);
+  }
+
+  .phase-card::before {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+  }
+
+  .phase-card::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,245,255,0.06) 0%, transparent 60%);
+    opacity:0;
+    transition: opacity 0.3s;
+    pointer-events:none;
+  }
+
+  .phase-card:hover::after { opacity:1; }
+
+  .phase-card.visible {
+    opacity:1;
+    transform: translateY(0);
+  }
+
+  .phase-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 30px rgba(0,245,255,0.1), 0 20px 40px rgba(0,0,0,0.4);
+    transform: translateY(-4px);
+  }
+
+  .phase-card.completed {
+    border-color: rgba(0,255,136,0.4);
+    background: rgba(0,255,136,0.04);
+  }
+
+  .phase-card.completed::before {
+    background: var(--green);
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+  }
+
+  .phase-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .phase-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .phase-status {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    background: transparent;
+  }
+
+  .phase-status:hover {
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0,245,255,0.3);
+  }
+
+  .phase-card.completed .phase-status {
+    background: var(--green);
+    border-color: var(--green);
+    color: #000;
+  }
+
+  .phase-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .phase-duration {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .phase-topics {
+    list-style: none;
+    margin-bottom: 1.2rem;
+  }
+
+  .phase-topics li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 4px 0;
+    line-height: 1.5;
+  }
+
+  .phase-topics li::before {
+    content: '▸';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .phase-project {
+    background: rgba(0,0,0,0.3);
+    border-left: 2px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+
+  .phase-project strong {
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    display: block;
+    margin-bottom: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .phase-expand-btn {
+    width: 100%;
+    margin-top: 1rem;
+    background: rgba(0,245,255,0.05);
+    border: 1px solid rgba(0,245,255,0.15);
+    color: var(--cyan);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+
+  .phase-expand-btn:hover {
+    background: rgba(0,245,255,0.1);
+    border-color: var(--cyan);
+  }
+
+  .phase-details {
+    display: none;
+    margin-top: 1rem;
+    animation: expandDown 0.3s ease;
+  }
+
+  .phase-details.open {
+    display: block;
+  }
+
+  .resources-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .resource-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.82rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: color 0.2s;
+  }
+
+  .resource-link:hover { color: var(--cyan); }
+  .resource-link .r-icon { font-size: 0.9rem; }
+  .resource-badge {
+    margin-left: auto;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: rgba(0,245,255,0.1);
+    color: var(--cyan);
+    font-family: 'Space Mono', monospace;
+    white-space: nowrap;
+  }
+
+  /* ── OVERALL PROGRESS ── */
+  .progress-section {
+    padding: 4rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .progress-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s ease;
+  }
+
+  .progress-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .progress-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .progress-pct {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--cyan);
+    line-height: 1;
+  }
+
+  .progress-bar-container {
+    background: rgba(255,255,255,0.05);
+    border-radius: 100px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+    transition: width 1s ease;
+    box-shadow: 0 0 10px rgba(0,245,255,0.5);
+    width: 0%;
+  }
+
+  .phase-dots {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .phase-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .phase-dot-circle {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: rgba(0,0,0,0.3);
+  }
+
+  .phase-dot.done .phase-dot-circle {
+    border-color: var(--green);
+    background: rgba(0,255,136,0.1);
+    box-shadow: 0 0 15px rgba(0,255,136,0.3);
+  }
+
+  .phase-dot-label {
+    font-size: 0.6rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    text-align: center;
+    max-width: 50px;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content:'';
+    position:absolute;
+    left: 50%;
+    top:0; bottom:0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
+    transform: translateX(-50%);
+  }
+
+  .tl-item {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.6s ease;
+  }
+
+  .tl-item:nth-child(even) {
+    flex-direction: row-reverse;
+    transform: translateX(30px);
+  }
+
+  .tl-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .tl-content {
+    width: calc(50% - 2rem);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .tl-dot {
+    position: absolute;
+    left: 50%;
+    top: 1.5rem;
+    transform: translateX(-50%);
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 15px var(--cyan);
+    z-index:1;
+  }
+
+  .tl-month {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--cyan);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.08em;
+  }
+
+  .tl-phase-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .tl-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── SKILLS CLOUD ── */
+  .skills-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .skill-tag {
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    border: 1px solid;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.2s;
+    cursor: default;
+  }
+
+  .skill-tag.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .skill-tag:hover {
+    box-shadow: 0 0 15px currentColor;
+  }
+
+  .skill-tag.t1 { color: var(--cyan); border-color: rgba(0,245,255,0.3); background: rgba(0,245,255,0.06); }
+  .skill-tag.t2 { color: var(--amber); border-color: rgba(255,179,0,0.3); background: rgba(255,179,0,0.06); }
+  .skill-tag.t3 { color: var(--pink); border-color: rgba(255,78,205,0.3); background: rgba(255,78,205,0.06); }
+  .skill-tag.t4 { color: var(--green); border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.06); }
+  .skill-tag.t5 { color: var(--purple); border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.06); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid rgba(0,245,255,0.08);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  footer .footer-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: var(--cyan);
+    margin-bottom: 1rem;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2rem;
+    transform: scale(0.9);
+    transition: transform 0.3s;
+  }
+
+  .modal-overlay.open .modal {
+    transform: scale(1);
+  }
+
+  .modal-close {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--cyan); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeSlideDown {
+    from { opacity:0; transform: translateY(-20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+  }
+
+  @keyframes pulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(0,255,136,0.5); }
+    50% { box-shadow:0 0 0 6px rgba(0,255,136,0); }
+  }
+
+  @keyframes scrollPulse {
+    0%,100% { opacity:0.3; }
+    50% { opacity:1; }
+  }
+
+  @keyframes expandDown {
+    from { opacity:0; transform: translateY(-10px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .timeline::before { left: 1.5rem; }
+    .tl-item, .tl-item:nth-child(even) {
+      flex-direction: column;
+      transform: translateX(0) translateY(20px);
+    }
+    .tl-item.visible { transform: translateX(0) translateY(0); }
+    .tl-content { width: 100%; margin-left: 3rem; }
+    .tl-dot { left: 1.5rem; }
+    .nav-links { display: none; }
+    .phases-grid { grid-template-columns: 1fr; }
+    .phase-dots { gap: 0.4rem; }
+    .phase-dot-circle { width:32px; height:32px; font-size:0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">PY·AI·ROAD</div>
+  <ul class="nav-links">
+    <li><a href="#phases">Phases</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#progress">Progress</a></li>
+  </ul>
+  <div class="nav-progress-text" id="nav-progress">0% Complete</div>
+</nav>
+
+<div class="wrapper">
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-badge"><span class="dot"></span> 8–9 Month Structured Roadmap</div>
+    <h1>
+      <span class="line1">Python AI &</span>
+      <span class="line2">Agent Mastery</span>
+    </h1>
+    <p class="hero-sub">From Python basics to building autonomous AI agents with LLMs, LangChain, and multi-agent systems. Designed for 1 hr/day learners.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">7</span><span class="stat-label">Phases</span></div>
+      <div class="stat"><span class="stat-num">9</span><span class="stat-label">Months</span></div>
+      <div class="stat"><span class="stat-num">6+</span><span class="stat-label">Projects</span></div>
+      <div class="stat"><span class="stat-num">40+</span><span class="stat-label">Topics</span></div>
+    </div>
+    <a href="#phases" class="hero-cta">▶ START ROADMAP</a>
+    <div class="scroll-hint">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- PROGRESS TRACKER -->
+  <section class="progress-section" id="progress">
+    <div class="progress-card" id="prog-card">
+      <div class="progress-header">
+        <div>
+          <div class="section-label" style="margin-bottom:0.5rem">YOUR JOURNEY</div>
+          <div class="progress-title">Learning Progress</div>
+        </div>
+        <div class="progress-pct" id="pct-display">0%</div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="main-prog-bar"></div>
+      </div>
+      <div class="phase-dots" id="phase-dots"></div>
+      <p style="text-align:center;color:var(--muted);font-size:0.78rem;margin-top:1.5rem;font-family:'Space Mono',monospace;">Click phase icons or ✓ buttons on cards to mark progress</p>
+    </div>
+  </section>
+
+  <!-- PHASES -->
+  <section class="section" id="phases">
+    <div class="section-header" id="phases-header">
+      <div class="section-label">CURRICULUM</div>
+      <h2 class="section-title">Learning Phases</h2>
+      <p class="section-desc">Seven carefully sequenced phases that build on each other — from Python fundamentals to autonomous AI agents.</p>
+    </div>
+    <div class="phases-grid" id="phases-grid"></div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="section" id="timeline">
+    <div class="section-header" id="timeline-header">
+      <div class="section-label">SCHEDULE</div>
+      <h2 class="section-title">Month-by-Month Timeline</h2>
+      <p class="section-desc">A realistic timeline based on 1 hr/day on weekdays and longer weekend sessions.</p>
+    </div>
+    <div class="timeline" id="timeline-container"></div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="section" id="skills">
+    <div class="section-header" id="skills-header">
+      <div class="section-label">TECH STACK</div>
+      <h2 class="section-title">Skills You'll Master</h2>
+      <p class="section-desc">Every tool and technology you'll gain hands-on experience with across the roadmap.</p>
+    </div>
+    <div class="skills-cloud" id="skills-cloud"></div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">PY·AI·ROAD</div>
+    <p>Built for Ayush · MCA Student · Gujarat, India</p>
+    <p style="margin-top:0.5rem;font-size:0.7rem;">Track your progress, build projects, deploy your future.</p>
+  </footer>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const phases = [
+  {
+    id:0, icon:'⚡', title:'Python Power-Up',
+    accent:'#00f5ff',
+    duration:'Weeks 1–4 (1 Month)',
+    topics:['OOP: classes, inheritance, dunder methods','List comprehensions, generators, decorators','File I/O, JSON handling, error handling','Virtual environments, pip, modules','Type hints & modern Python patterns'],
+    project:'CLI Data Parser — read, transform, and export JSON/CSV datasets',
+    resources:[
+      {name:'Python OOP Full Course – Corey Schafer',url:'https://www.youtube.com/watch?v=ZDa-Z5JzLYM',badge:'YouTube',icon:'▶'},
+      {name:'Real Python – Decorators Guide',url:'https://realpython.com/primer-on-python-decorators/',badge:'Article',icon:'📖'},
+      {name:'Fluent Python (Book)',url:'https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/',badge:'Book',icon:'📚'},
+      {name:'Python Exercises – Exercism',url:'https://exercism.org/tracks/python',badge:'Practice',icon:'💻'},
+    ]
+  },
+  {
+    id:1, icon:'📊', title:'Data & Math Foundations',
+    accent:'#ffb300',
+    duration:'Weeks 5–8 (1 Month)',
+    topics:['NumPy: arrays, broadcasting, matrix ops','Pandas: DataFrames, merging, groupby, cleaning','Matplotlib & Seaborn for visualization','Statistics: mean, variance, distributions, correlation','Kaggle intro & real datasets'],
+    project:'EDA Report — analyze a Kaggle dataset with charts and insights',
+    resources:[
+      {name:'NumPy Tutorial – freeCodeCamp',url:'https://www.youtube.com/watch?v=QUT1VHiLmmI',badge:'YouTube',icon:'▶'},
+      {name:'Pandas Documentation',url:'https://pandas.pydata.org/docs/user_guide/',badge:'Docs',icon:'📖'},
+      {name:'Kaggle Pandas Course (Free)',url:'https://www.kaggle.com/learn/pandas',badge:'Free',icon:'🎓'},
+      {name:'StatQuest – Stats for ML',url:'https://www.youtube.com/c/joshstarmer',badge:'YouTube',icon:'▶'},
+    ]
+  },
+  {
+    id:2, icon:'🤖', title:'Machine Learning',
+    accent:'#a855f7',
+    duration:'Weeks 9–15 (1.5 Months)',
+    topics:['Scikit-learn: regression, classification, clustering','Train/test splits, k-fold cross-validation','Metrics: accuracy, precision, recall, F1, AUC','Feature engineering & preprocessing pipelines','Intro to neural networks (perceptron, backprop)'],
+    project:'ML Pipeline — predict house prices or spam classifier with evaluation',
+    resources:[
+      {name:'Scikit-learn User Guide',url:'https://scikit-learn.org/stable/user_guide.html',badge:'Docs',icon:'📖'},
+      {name:'Fast.ai Practical Deep Learning',url:'https://www.fast.ai/',badge:'Free',icon:'🎓'},
+      {name:'Hands-On ML – Aurélien Géron (Book)',url:'https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/',badge:'Book',icon:'📚'},
+      {name:'Kaggle ML Courses',url:'https://www.kaggle.com/learn',badge:'Free',icon:'🎓'},
+    ]
+  },
+  {
+    id:3, icon:'🧠', title:'Deep Learning',
+    accent:'#ff4ecd',
+    duration:'Weeks 16–22 (1.5 Months)',
+    topics:['PyTorch fundamentals — tensors, autograd, nn.Module','CNNs for image classification & recognition','RNNs & LSTMs for sequences','Transfer learning with pretrained models','Model saving, loading, evaluation & export'],
+    project:'Image Classifier — train & deploy a CNN (e.g., food or plant recognition)',
+    resources:[
+      {name:'PyTorch Official Tutorials',url:'https://pytorch.org/tutorials/',badge:'Docs',icon:'📖'},
+      {name:'Deep Learning with PyTorch – Zero to Mastery',url:'https://www.learnpytorch.io/',badge:'Free',icon:'🎓'},
+      {name:'d2l.ai – Dive into Deep Learning',url:'https://d2l.ai/',badge:'Book',icon:'📚'},
+      {name:'Andrej Karpathy – Neural Networks from Scratch',url:'https://www.youtube.com/watch?v=VMj-3S1tku0',badge:'YouTube',icon:'▶'},
+    ]
+  },
+  {
+    id:4, icon:'💬', title:'LLMs & Generative AI',
+    accent:'#00ff88',
+    duration:'Weeks 23–27 (1 Month)',
+    topics:['OpenAI API — chat completions, embeddings','Hugging Face Transformers & model hub','Prompt engineering: zero-shot, few-shot, CoT','RAG — Retrieval-Augmented Generation basics','Vector databases: Chroma, Pinecone intro'],
+    project:'Custom Chatbot — Q&A bot over your own documents using RAG',
+    resources:[
+      {name:'OpenAI API Docs',url:'https://platform.openai.com/docs',badge:'Docs',icon:'📖'},
+      {name:'Hugging Face NLP Course (Free)',url:'https://huggingface.co/learn/nlp-course',badge:'Free',icon:'🎓'},
+      {name:'LangChain RAG Tutorial',url:'https://python.langchain.com/docs/tutorials/rag/',badge:'Docs',icon:'📖'},
+      {name:'Prompt Engineering Guide',url:'https://www.promptingguide.ai/',badge:'Free',icon:'🎓'},
+    ]
+  },
+  {
+    id:5, icon:'🕵️', title:'AI Agents',
+    accent:'#00f5ff',
+    duration:'Weeks 28–33 (1.5 Months)',
+    topics:['Agent concepts: tools, memory, planning loops','LangChain: chains, agents, tool use','LangGraph: stateful multi-step agents','CrewAI & AutoGen for multi-agent systems','Agentic RAG, web search, code-exec agents'],
+    project:'AI Personal Assistant — agent with memory, web search, and task tools',
+    resources:[
+      {name:'LangChain Agents Docs',url:'https://python.langchain.com/docs/how_to/#agents',badge:'Docs',icon:'📖'},
+      {name:'LangGraph Introduction',url:'https://langchain-ai.github.io/langgraph/',badge:'Docs',icon:'📖'},
+      {name:'CrewAI Documentation',url:'https://docs.crewai.com/',badge:'Docs',icon:'📖'},
+      {name:'Andrew Ng – AI Agents Course',url:'https://www.deeplearning.ai/short-courses/',badge:'Free',icon:'🎓'},
+    ]
+  },
+  {
+    id:6, icon:'🚀', title:'Deploy & Showcase',
+    accent:'#ffb300',
+    duration:'Weeks 34–36 (3 Weeks)',
+    topics:['FastAPI — wrap AI model as REST API','Streamlit & Gradio for rapid AI UIs','Deploy on Hugging Face Spaces or Render','Docker basics for AI apps','GitHub portfolio — README, demo, writeup'],
+    project:'Capstone — Full AI Agent App deployed live with GitHub portfolio',
+    resources:[
+      {name:'FastAPI Docs',url:'https://fastapi.tiangolo.com/',badge:'Docs',icon:'📖'},
+      {name:'Streamlit Docs',url:'https://docs.streamlit.io/',badge:'Docs',icon:'📖'},
+      {name:'HuggingFace Spaces Guide',url:'https://huggingface.co/docs/hub/spaces',badge:'Free',icon:'🎓'},
+      {name:'Docker for Beginners',url:'https://www.youtube.com/watch?v=pg19Z8LL06w',badge:'YouTube',icon:'▶'},
+    ]
+  }
+];
+
+const timeline = [
+  {month:'Month 1', phase:'Python Power-Up', desc:'Master modern Python — OOP, decorators, generators. Build CLI tools. Solid foundation before AI.'},
+  {month:'Month 2', phase:'Data & Math Foundations', desc:'NumPy, Pandas, visualization, statistics. Kaggle EDA project. Every ML engineer needs this.'},
+  {month:'Month 3–4', phase:'Machine Learning', desc:'Scikit-learn ML pipeline, model evaluation, feature engineering. First real predictive model.'},
+  {month:'Month 5–6', phase:'Deep Learning', desc:'PyTorch, CNNs, transfer learning. Build an image classifier. Understand how neural nets really work.'},
+  {month:'Month 7', phase:'LLMs & Generative AI', desc:'OpenAI API, Hugging Face, RAG, vector DBs. Build a chatbot on your own data.'},
+  {month:'Month 8–9', phase:'AI Agents + Deploy', desc:'LangChain agents, LangGraph, CrewAI. Deploy your capstone. Add it to your resume.'},
+];
+
+const skills = [
+  {name:'Python 3.12+',t:'t1'},{name:'OOP',t:'t1'},{name:'NumPy',t:'t2'},{name:'Pandas',t:'t2'},
+  {name:'Matplotlib',t:'t2'},{name:'Scikit-learn',t:'t3'},{name:'PyTorch',t:'t3'},{name:'TensorFlow',t:'t3'},
+  {name:'Transformers',t:'t4'},{name:'OpenAI API',t:'t4'},{name:'LangChain',t:'t4'},{name:'LangGraph',t:'t4'},
+  {name:'CrewAI',t:'t5'},{name:'AutoGen',t:'t5'},{name:'RAG',t:'t4'},{name:'Vector DBs',t:'t4'},
+  {name:'FastAPI',t:'t1'},{name:'Streamlit',t:'t2'},{name:'Gradio',t:'t2'},{name:'Docker',t:'t1'},
+  {name:'Hugging Face',t:'t4'},{name:'Prompt Engineering',t:'t5'},{name:'Git & GitHub',t:'t1'},
+  {name:'Chroma DB',t:'t3'},{name:'Jupyter',t:'t2'},{name:'MLflow',t:'t5'},{name:'Seaborn',t:'t2'},
+  {name:'NLTK / spaCy',t:'t3'},{name:'Pytest',t:'t1'},{name:'Render / HF Spaces',t:'t5'},
+];
+
+// ── STATE ──
+let completed = JSON.parse(localStorage.getItem('py-ai-roadmap') || '[]');
+
+function saveState() {
+  localStorage.setItem('py-ai-roadmap', JSON.stringify(completed));
+}
+
+function updateProgress() {
+  const pct = Math.round((completed.length / phases.length) * 100);
+  document.getElementById('pct-display').textContent = pct + '%';
+  document.getElementById('main-prog-bar').style.width = pct + '%';
+  document.getElementById('nav-progress').textContent = pct + '% Complete';
+
+  document.querySelectorAll('.phase-dot').forEach((dot,i) => {
+    if(completed.includes(i)) dot.classList.add('done');
+    else dot.classList.remove('done');
+  });
+
+  document.querySelectorAll('.phase-card').forEach((card,i) => {
+    const btn = card.querySelector('.phase-status');
+    if(completed.includes(i)) {
+      card.classList.add('completed');
+      btn.textContent = '✓';
+    } else {
+      card.classList.remove('completed');
+      btn.textContent = '';
+    }
+  });
+}
+
+function togglePhase(id) {
+  if(completed.includes(id)) completed = completed.filter(x => x !== id);
+  else completed.push(id);
+  saveState();
+  updateProgress();
+}
+
+// ── BUILD PHASES GRID ──
+function buildPhases() {
+  const grid = document.getElementById('phases-grid');
+  phases.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'phase-card';
+    card.style.setProperty('--accent', p.accent);
+    card.style.transitionDelay = (i * 0.1) + 's';
+
+    card.innerHTML = `
+      <div class="phase-header">
+        <div>
+          <div class="phase-number">PHASE ${i+1} OF ${phases.length}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="phase-icon">${p.icon}</span>
+          <button class="phase-status" onclick="event.stopPropagation();togglePhase(${i})" title="Mark complete"></button>
+        </div>
+      </div>
+      <div class="phase-title">${p.title}</div>
+      <div class="phase-duration">⏱ ${p.duration}</div>
+      <ul class="phase-topics">
+        ${p.topics.map(t => `<li>${t}</li>`).join('')}
+      </ul>
+      <div class="phase-project">
+        <strong>▸ MINI PROJECT</strong>
+        ${p.project}
+      </div>
+      <button class="phase-expand-btn" onclick="toggleDetails(this)">▾ RESOURCES & LINKS</button>
+      <div class="phase-details">
+        <div class="resources-title">Free Resources</div>
+        ${p.resources.map(r => `
+          <a class="resource-link" href="${r.url}" target="_blank" rel="noopener">
+            <span class="r-icon">${r.icon}</span>
+            ${r.name}
+            <span class="resource-badge">${r.badge}</span>
+          </a>
+        `).join('')}
+      </div>
+    `;
+
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const mx = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      const my = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      card.style.setProperty('--mx', mx + '%');
+      card.style.setProperty('--my', my + '%');
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+function toggleDetails(btn) {
+  const det = btn.nextElementSibling;
+  det.classList.toggle('open');
+  btn.textContent = det.classList.contains('open') ? '▴ RESOURCES & LINKS' : '▾ RESOURCES & LINKS';
+}
+
+// ── BUILD PHASE DOTS ──
+function buildDots() {
+  const container = document.getElementById('phase-dots');
+  phases.forEach((p,i) => {
+    const dot = document.createElement('div');
+    dot.className = 'phase-dot';
+    dot.innerHTML = `
+      <div class="phase-dot-circle">${p.icon}</div>
+      <div class="phase-dot-label">P${i+1}</div>
+    `;
+    dot.addEventListener('click', () => {
+      togglePhase(i);
+    });
+    container.appendChild(dot);
+  });
+}
+
+// ── BUILD TIMELINE ──
+function buildTimeline() {
+  const container = document.getElementById('timeline-container');
+  timeline.forEach((t,i) => {
+    const item = document.createElement('div');
+    item.className = 'tl-item';
+    item.innerHTML = `
+      <div class="tl-content">
+        <div class="tl-month">${t.month}</div>
+        <div class="tl-phase-name">${t.phase}</div>
+        <div class="tl-desc">${t.desc}</div>
+      </div>
+      <div class="tl-dot"></div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+// ── BUILD SKILLS ──
+function buildSkills() {
+  const cloud = document.getElementById('skills-cloud');
+  skills.forEach((s,i) => {
+    const tag = document.createElement('span');
+    tag.className = `skill-tag ${s.t}`;
+    tag.textContent = s.name;
+    tag.style.transitionDelay = (i * 0.04) + 's';
+    cloud.appendChild(tag);
+  });
+}
+
+// ── CANVAS PARTICLES ──
+function initCanvas() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+
+  let W, H, particles, mouse = {x:0,y:0};
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createParticles() {
+    particles = Array.from({length:80}, () => ({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*1.5+0.5,
+      vx: (Math.random()-0.5)*0.3,
+      vy: (Math.random()-0.5)*0.3,
+      alpha: Math.random()*0.5+0.1,
+      color: ['#00f5ff','#a855f7','#ff4ecd','#00ff88','#ffb300'][Math.floor(Math.random()*5)]
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+
+    // connections
+    for(let i=0;i<particles.length;i++) {
+      for(let j=i+1;j<particles.length;j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if(d < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle = `rgba(0,245,255,${0.06*(1-d/120)})`;
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0) p.x=W; if(p.x>W) p.x=0;
+      if(p.y<0) p.y=H; if(p.y>H) p.y=0;
+
+      // mouse attraction
+      const dx = mouse.x - p.x, dy = mouse.y - p.y;
+      const d = Math.sqrt(dx*dx+dy*dy);
+      if(d<150) {
+        p.x += dx*0.003;
+        p.y += dy*0.003;
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = p.color + Math.floor(p.alpha*255).toString(16).padStart(2,'0');
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', ()=>{ resize(); createParticles(); });
+  window.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; });
+  resize(); createParticles(); draw();
+}
+
+// ── SCROLL PROGRESS ──
+function initScrollProgress() {
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const pct = (scrollTop / scrollH) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+  });
+}
+
+// ── INTERSECTION OBSERVER ──
+function initObserver() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.section-header, .phase-card, .tl-item, .skill-tag, .progress-card').forEach(el => obs.observe(el));
+}
+
+// ── MODAL ──
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.remove('open');
+});
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if(e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+});
+
+// ── INIT ──
+buildPhases();
+buildDots();
+buildTimeline();
+buildSkills();
+initCanvas();
+initScrollProgress();
+setTimeout(initObserver, 100);
+updateProgress();
+</script>
+</body>
+</html>
